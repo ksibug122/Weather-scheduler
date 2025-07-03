@@ -108,6 +108,48 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void _showForgotPasswordDialog() {
+    final TextEditingController emailResetController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Reset Password"),
+        content: TextField(
+          controller: emailResetController,
+          decoration: const InputDecoration(
+            labelText: "Enter your email",
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final email = emailResetController.text.trim();
+              Navigator.pop(context); // close the dialog
+
+              try {
+                await FirebaseAuth.instance.sendPasswordResetEmail(
+                  email: email,
+                );
+                _showErrorDialog(
+                  "Password reset email sent. Check your inbox.",
+                );
+              } on FirebaseAuthException catch (e) {
+                _showErrorDialog(e.message ?? "Failed to send reset email.");
+              }
+            },
+            child: const Text("Send"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: _showForgotPasswordDialog,
                 child: const Text("Forgot Password?"),
               ),
             ),
