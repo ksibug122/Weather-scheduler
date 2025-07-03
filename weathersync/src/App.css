@@ -1,0 +1,355 @@
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Login Screen Styles */
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #99f6e4, #bbf7d0, #bfdbfe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.login-card {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+  border: 8px solid black;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.logo-sun {
+  color: #fb923c;
+}
+
+.logo-cloud {
+  color: #60a5fa;
+}
+
+.logo-calendar {
+  color: #4b5563;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  border: none;
+  outline: none;
+  color: #1f2937;
+  transition: background-color 0.2s;
+}
+
+.form-input:focus {
+  background-color: #e5e7eb;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.form-button {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  color: #1f2937;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-button:hover {
+  background-color: #d1d5db;
+}
+
+/* Main App Styles */
+.main-app {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #eff6ff, #f0fdfa);
+}
+
+.app-header {
+  background: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-sun {
+  color: #fb923c;
+}
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.welcome-text {
+  color: #4b5563;
+}
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #dc2626;
+}
+
+.main-content {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Weather Card */
+.weather-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.weather-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.weather-location {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.weather-condition {
+  color: #4b5563;
+}
+
+.weather-temp-container {
+  text-align: right;
+}
+
+.weather-temperature {
+  font-size: 2.25rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.weather-icon {
+  color: #60a5fa;
+  margin: 0.5rem auto 0;
+}
+
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.forecast-item {
+  text-align: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.forecast-day {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.forecast-condition {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.forecast-temp {
+  font-size: 0.875rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+/* Schedule Card */
+.schedule-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.schedule-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.schedule-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.schedule-icon {
+  color: #4b5563;
+}
+
+.events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.event-title {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.event-time {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.event-weather {
+  font-size: 0.875rem;
+  color: #4b5563;
+  background-color: #dbeafe;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.add-event-button {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-event-button:hover {
+  background-color: #2563eb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .header-user {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .forecast-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .weather-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .weather-temp-container {
+    text-align: left;
+  }
+  
+  .event-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
