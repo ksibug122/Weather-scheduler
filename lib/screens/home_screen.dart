@@ -7,12 +7,14 @@ import 'clothing_page.dart';
 import 'moodcast_page.dart';
 import 'settings_page.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isDarkMode;
   final Function(bool) toggleDarkMode;
   final MaterialColor themeColor;
   final Function(MaterialColor) changeThemeColor;
+  final User? user;
 
   const HomeScreen({
     super.key,
@@ -20,6 +22,7 @@ class HomeScreen extends StatefulWidget {
     required this.toggleDarkMode,
     required this.themeColor,
     required this.changeThemeColor,
+    this.user,
   });
 
   @override

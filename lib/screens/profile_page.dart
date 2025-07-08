@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final User? user;
+  
+  const ProfilePage({super.key, this.user});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -9,13 +13,85 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool isEditing = false;
+  
+  late TextEditingController nameController;
+  late TextEditingController birthdayController;
+  late TextEditingController numberController;
+  late TextEditingController instagramController;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
 
-  final nameController = TextEditingController(text: 'Keyro Sibug');
-  final birthdayController = TextEditingController(text: 'January 1, 2000');
-  final numberController = TextEditingController(text: '09217121469');
-  final instagramController = TextEditingController(text: '@keyro_ig');
-  final emailController = TextEditingController(text: 'info@aplusdesign.co');
-  final passwordController = TextEditingController(text: '••••••••');
+  @override
+  void initState() {
+    super.initState();
+    _initializeControllers();
+    _loadUserData();
+  }
+
+  void _initializeControllers() {
+    // Initialize controllers with the current user's data or empty values
+    nameController = TextEditingController(
+      text: widget.user?.displayName ?? ''
+    );
+    birthdayController = TextEditingController(text: '');
+    numberController = TextEditingController(text: '');
+    instagramController = TextEditingController(text: '');
+    emailController = TextEditingController(
+      text: widget.user?.email ?? ''
+    );
+    passwordController = TextEditingController(text: '••••••••');
+  }
+
+  void _loadUserData() async {
+    // Load saved profile data from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final userId = widget.user?.uid ?? '';
+    
+    if (userId.isNotEmpty) {
+      setState(() {
+        nameController.text = prefs.getString('${userId}_name') ?? 
+            widget.user?.displayName ?? '';
+        birthdayController.text = prefs.getString('${userId}_birthday') ?? '';
+        numberController.text = prefs.getString('${userId}_number') ?? '';
+        instagramController.text = prefs.getString('${userId}_instagram') ?? '';
+        // Email is readonly from Firebase
+        emailController.text = widget.user?.email ?? '';
+      });
+    }
+  }
+
+  void _saveUserData() async {
+    // Save profile data to SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final userId = widget.user?.uid ?? '';
+    
+    if (userId.isNotEmpty) {
+      await prefs.setString('${userId}_name', nameController.text);
+      await prefs.setString('${userId}_birthday', birthdayController.text);
+      await prefs.setString('${userId}_number', numberController.text);
+      await prefs.setString('${userId}_instagram', instagramController.text);
+      
+      // Update display name in Firebase if it changed
+      if (nameController.text != widget.user?.displayName) {
+        try {
+          await widget.user?.updateDisplayName(nameController.text);
+        } catch (e) {
+          print('Error updating display name: $e');
+        }
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    birthdayController.dispose();
+    numberController.dispose();
+    instagramController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,16 +131,23 @@ class _ProfilePageState extends State<ProfilePage> {
                   left: 0,
                   right: 0,
                   child: Column(
-                    children: const [
+                    children: [
                       CircleAvatar(
                         radius: 40,
                         backgroundColor: Colors.white,
-                        child: Icon(Icons.person, size: 60, color: Colors.blue),
+                        backgroundImage: widget.user?.photoURL != null 
+                            ? NetworkImage(widget.user!.photoURL!) 
+                            : null,
+                        child: widget.user?.photoURL == null 
+                            ? const Icon(Icons.person, size: 60, color: Colors.blue)
+                            : null,
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
-                        'Keyro Sibug',
-                        style: TextStyle(
+                        nameController.text.isEmpty 
+                            ? 'New User' 
+                            : nameController.text,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -83,33 +166,44 @@ class _ProfilePageState extends State<ProfilePage> {
               icon: Icons.person_outline,
               controller: nameController,
               enabled: isEditing,
+              hintText: 'Enter your name',
             ),
             ProfileItemField(
               icon: Icons.cake_outlined,
               controller: birthdayController,
               enabled: isEditing,
+              hintText: 'Enter your birthday',
             ),
             ProfileItemField(
               icon: Icons.phone_outlined,
               controller: numberController,
               enabled: isEditing,
+              hintText: 'Enter your phone number',
             ),
             ProfileItemField(
               icon: Icons.camera_alt_outlined,
               controller: instagramController,
               enabled: isEditing,
+              hintText: 'Enter your Instagram handle',
             ),
             ProfileItemField(
               icon: Icons.mail_outline,
               controller: emailController,
-              enabled: isEditing,
+              enabled: false, // Email should not be editable
+              hintText: 'Email from account',
             ),
             ProfileItemField(
               icon: Icons.visibility_outlined,
               controller: passwordController,
-              enabled: isEditing,
+              enabled: false, // Password should not be editable here
               obscureText: true,
-              trailing: const Icon(Icons.sync, size: 18, color: Colors.grey),
+              trailing: GestureDetector(
+                onTap: () {
+                  // Navigate to change password screen or show dialog
+                  _showChangePasswordDialog();
+                },
+                child: const Icon(Icons.sync, size: 18, color: Colors.grey),
+              ),
             ),
 
             const SizedBox(height: 32),
@@ -123,8 +217,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     setState(() => isEditing = !isEditing);
                     if (!isEditing) {
-                      // Save logic
-                      print('Saved: ${nameController.text}');
+                      _saveUserData();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Profile saved successfully!'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -149,6 +248,24 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  void _showChangePasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Change Password'),
+          content: const Text('To change your password, please use the "Forgot Password" option on the login screen.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class ProfileItemField extends StatelessWidget {
@@ -157,6 +274,7 @@ class ProfileItemField extends StatelessWidget {
   final bool enabled;
   final bool obscureText;
   final Widget? trailing;
+  final String? hintText;
 
   const ProfileItemField({
     super.key,
@@ -165,6 +283,7 @@ class ProfileItemField extends StatelessWidget {
     required this.enabled,
     this.obscureText = false,
     this.trailing,
+    this.hintText,
   });
 
   @override
@@ -176,8 +295,18 @@ class ProfileItemField extends StatelessWidget {
         controller: controller,
         enabled: enabled,
         obscureText: obscureText,
-        decoration: const InputDecoration(border: InputBorder.none),
-        style: const TextStyle(fontSize: 16),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: enabled ? hintText : null,
+          hintStyle: TextStyle(
+            color: Colors.grey[400],
+            fontSize: 16,
+          ),
+        ),
+        style: TextStyle(
+          fontSize: 16,
+          color: enabled ? Colors.black : Colors.grey[600],
+        ),
       ),
       trailing: trailing,
     );

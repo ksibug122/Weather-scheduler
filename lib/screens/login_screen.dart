@@ -43,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
               toggleDarkMode: (value) {},
               themeColor: Colors.blue,
               changeThemeColor: (color) {},
+              user: user, // Pass the user object
             ),
           ),
         );
