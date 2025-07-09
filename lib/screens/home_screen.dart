@@ -6,6 +6,7 @@ import 'planner_page.dart';
 import 'clothing_page.dart';
 import 'moodcast_page.dart';
 import 'settings_page.dart';
+import 'feedback_page.dart'; 
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -61,13 +62,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   IconData _getWeatherIcon(String condition) {
     switch (condition.toLowerCase()) {
-      case 'rain':
+      case 'rainy':
         return Icons.umbrella;
-      case 'clouds':
+      case 'cloudy':
         return Icons.cloud;
-      case 'storm':
+      case 'stormy':
         return Icons.thunderstorm;
-      case 'snow':
+      case 'snowy':
         return Icons.ac_unit;
       case 'sunny':
       case 'clear':
@@ -91,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Top bar
+                    // Top bar - Updated with feedback button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -104,19 +105,33 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SettingsPage(
-                                isDarkMode: widget.isDarkMode,
-                                toggleDarkMode: widget.toggleDarkMode,
-                                currentColor: widget.themeColor,
-                                changeThemeColor: widget.changeThemeColor,
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.feedback),
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const FeedbackPage(),
+                                ),
+                              ),
+                              tooltip: 'Feedback',
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.settings),
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SettingsPage(
+                                    isDarkMode: widget.isDarkMode,
+                                    toggleDarkMode: widget.toggleDarkMode,
+                                    currentColor: widget.themeColor,
+                                    changeThemeColor: widget.changeThemeColor,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
